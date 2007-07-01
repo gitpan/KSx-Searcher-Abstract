@@ -1,0 +1,15 @@
+abstract: build searches from Perl data structures
+author: Hans Dieter Pearcey, C<< <hdp at cpan.org> >>
+build_requires: 
+  Test::More: 0.62
+distribution_type: module
+generated_by: Module::Install version 0.64
+license: perl
+name: KSx-Searcher-Abstract
+no_index: 
+  directory: 
+    - inc
+    - t
+requires: 
+  KinoSearch: 0.20_04
+version: 0.001
