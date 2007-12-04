@@ -3,7 +3,9 @@ use warnings;
 
 package KSx::Searcher::Abstract;
 
-our $VERSION = '0.001';
+our $VERSION = '0.002';
+use 5.008003; # KinoSearch requires this
+
 use base qw(KinoSearch::Searcher);
 
 use KinoSearch::Search::BooleanQuery;
@@ -22,7 +24,7 @@ sub search {
     Carp::croak "'query' argument is mandatory for search";
   }
   $options ||= {};
-  $self->search(
+  $self->SUPER::search(
     $self->build_abstract($query, $options)
   );
 }
@@ -90,7 +92,7 @@ KSx::Searcher::Abstract - build searches from Perl data structures
 
 =head1 VERSION
 
- 0.001
+ 0.002
 
 =head1 SYNOPSIS
 

@@ -8,6 +8,7 @@ lib/KSx/Searcher/Abstract.pm
 t/00-load.t
 t/pod-coverage.t
 t/pod.t
+t/build_search.t
 t/search.t
 inc/Module/Install/Can.pm
 inc/Module/Install/Base.pm
@@ -20,3 +21,5 @@ inc/Module/Install/Include.pm
 inc/Module/Install/Metadata.pm
 inc/Module/Install.pm
 inc/Module/AutoInstall.pm
+t/lib/My/Manager.pm
+t/lib/My/Schema.pm

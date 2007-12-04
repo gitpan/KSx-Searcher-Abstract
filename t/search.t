@@ -2,51 +2,28 @@
 
 use strict;
 use warnings;
-use Test::More tests => 8;
 
-use KSx::Searcher::Abstract;
-my $s = "KSx::Searcher::Abstract";
+use Test::More 'no_plan';
 
-# XXX need more tests than this, but I am too lazy to make a real invindex and
-# schema.  -- hdp, 2007-07-01
+use lib 't/lib';
+use My::Manager;
+use File::Temp qw(tempdir);
 
-for my $valid_query (
-  { foo => 1 },
-  { foo => { '=' => 1 } },
-  { foo => { '!=' => 1 } },
-) {
-  my %data = eval { $s->build_abstract($valid_query) };
-  is $@, "", "did not die on valid query";
+my $dir = tempdir(CLEANUP => 1);
+
+my $mgr = My::Manager->new({
+  root => $dir,
+});
+
+$mgr->write([
+  (map { { id => $_ } } 1..10),
+  (map { { id => $_, color => 'red' } } 11..15),
+]);
+
+is $mgr->search({ id => 13 })->total_hits, 1, "one hit by id";
+is $mgr->search({ color => 'colorless' })->total_hits, 10, "10 by =";
+{
+  local $TODO = "make negative matching work";
+is $mgr->search({ id => { '!=' => 13 } })->total_hits, 5,
+  '5 by !=';
 }
-
-for my $invalid_query (
-  {},
-  { foo => \17 },
-  [],
-) {
-  eval { $s->build_abstract($invalid_query) };
-  isnt $@, "", "did die on invalid query";
-}
-
-my %data = $s->build_abstract({ foo => 1 }, { sort => [ { field => 'foo' } ] });
-is_deeply $data{sort_spec},
-  {
-    criteria => [
-      { field => 'foo', reverse => 0 },
-    ],
-  },
-  "build sort spec";
-
-%data = $s->build_abstract(
-  { foo => 1 },
-  { sort => [ { field => 'foo' }, { field => 'bar', reverse => 1 } ] }
-);
-
-is_deeply $data{sort_spec},
-  {
-    criteria => [
-      { field => 'foo', reverse => 0 },
-      { field => 'bar', reverse => 1 },
-    ],
-  },
-  "build sort spec (multiple)";
